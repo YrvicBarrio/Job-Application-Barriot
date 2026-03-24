@@ -118,54 +118,6 @@ def dashboard():
 
     return render_template("Dashboard.html")
 
-# ---------------- PROFILE ----------------
-@app.route("/profile", methods=["GET", "POST"])
-def profile():
-
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    username = session["user"]
-
-    if username not in users:
-        return redirect(url_for("dashboard"))
-
-    if request.method == "POST":
-        name = request.form.get("name")
-        age = request.form.get("age")
-        address = request.form.get("address")
-        old_password = request.form.get("old_password")
-        new_password = request.form.get("new_password")
-        
-        # Validate required fields
-        if not name or not age or not address:
-            return render_template("profile.html", info=users.get(username), error="Name, age, and address are required")
-        
-        try:
-            age = int(age)
-        except:
-            return render_template("profile.html", info=users.get(username), error="Age must be a number")
-        
-        if age < 18 or age > 90:
-            return render_template("profile.html", info=users.get(username), error="Age must be between 18 and 90")
-        
-        # Check if user wants to change password
-        if new_password or old_password:
-            if not old_password:
-                return render_template("profile.html", info=users.get(username), error="Please enter your current password to make changes")
-            if old_password != users[username]["password"]:
-                return render_template("profile.html", info=users.get(username), error="Current password is incorrect")
-            if new_password:
-                users[username]["password"] = new_password
-        
-        users[username]["name"] = name
-        users[username]["age"] = age
-        users[username]["address"] = address
-
-        return render_template("profile.html", info=users.get(username), success=True)
-
-    return render_template("profile.html", info=users.get(username))
-
 # ---------------- DEVELOPER DASHBOARD ----------------
 @app.route("/developer_dashboard")
 def developer_dashboard():
@@ -372,6 +324,86 @@ def data_analyst_application():
         return render_template("data_analyst_application.html", errors=result)
 
     return render_template("data_analyst_application.html", errors={})
+
+# ---------------- EDIT PROFILE ROUTE ----------------
+# ---------------- PROFILE (EDITING ONLY) ----------------
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    # 1. Security Check: Must be logged in
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    current_session_username = session["user"]
+
+    # Prevent Developer from accessing user profile logic if necessary
+    if current_session_username == DEV_USERNAME:
+        return redirect(url_for("developer_dashboard"))
+
+    if current_session_username not in users:
+        return redirect(url_for("logout"))
+
+    if request.method == "POST":
+        # Get all data from the form
+        new_username = request.form.get("new_username")
+        name = request.form.get("name")
+        age = request.form.get("age")
+        address = request.form.get("address")
+        old_password = request.form.get("old_password")
+        new_password = request.form.get("new_password")
+
+        # 2. Server-Side Validation (Since 'required' tags were removed from HTML)
+        if not new_username or not name or not age or not address:
+            return render_template("profile.html", info=users[current_session_username], error="All personal fields are required")
+
+        try:
+            age = int(age)
+            if age < 18 or age > 90:
+                return render_template("profile.html", info=users[current_session_username], error="Age must be between 18 and 90")
+        except ValueError:
+            return render_template("profile.html", info=users[current_session_username], error="Age must be a valid number")
+
+        # 3. Identity Verification (Strict requirement for current password)
+        if not old_password:
+            return render_template("profile.html", info=users[current_session_username], error="Current password is required to save any changes")
+        
+        if old_password != users[current_session_username]["password"]:
+            return render_template("profile.html", info=users[current_session_username], error="Current password is incorrect")
+
+        # 4. Handle Username Migration Logic
+        # If the user is changing their username, we must move the dictionary key
+        target_username = current_session_username 
+        
+        if new_username != current_session_username:
+            if new_username in users:
+                return render_template("profile.html", info=users[current_session_username], error="That username is already taken")
+            
+            # Move the user data to the new key and delete the old one
+            users[new_username] = users.pop(current_session_username)
+            # Update the session so the user stays logged in under the new name
+            session["user"] = new_username
+            target_username = new_username
+
+        # 5. Update the Data
+        users[target_username]["name"] = name
+        users[target_username]["age"] = age
+        users[target_username]["address"] = address
+        
+        # Optional password update
+        if new_password:
+            if len(new_password) < 4:
+                return render_template("profile.html", info=users[target_username], error="New password must be at least 4 characters")
+            users[target_username]["password"] = new_password
+
+        return render_template("profile.html", info=users[target_username], success=True)
+
+    # GET request: Show the form with current data
+    return render_template("profile.html", info=users[current_session_username])
+
+# ---------------- EDIT PROFILE ALIAS ----------------
+@app.route("/edit_profile")
+def edit_profile():
+    # Simply redirect to profile since it is now the dedicated editing route
+    return redirect(url_for("profile"))
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":

@@ -1,305 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Profile</title>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #e0f2fe;
-        color: #1e3a8a;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings | Career Portal</title>
+    <style>
+        :root {
+            --sidebar-bg: #1e293b;
+            --main-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --accent-blue: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --error-red: #ef4444;
+        }
 
-    .navbar {
-        background-color: #0ea5e9;
-        color: white;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .navbar a {
-        color: white;
-        text-decoration: none;
-        margin-left: 20px;
-        font-weight: bold;
-    }
-    .navbar a:hover { opacity: 0.8; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background-color: var(--main-bg); 
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
 
-    .container {
-        max-width: 700px;
-        margin: 50px auto;
-        background-color: white;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
+        /* --- SIDEBAR (EXACT MATCH) --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+        }
 
-    h1 { font-size: 2rem; margin-bottom: 30px; text-align: center; }
-    
-    .section-title {
-        font-size: 1.2rem;
-        margin-bottom: 20px;
-        margin-top: 25px;
-        color: #0ea5e9;
-        border-bottom: 2px solid #0ea5e9;
-        padding-bottom: 10px;
-    }
-    
-    .section-title:first-of-type {
-        margin-top: 0;
-    }
-    
-    label { display: block; margin-top: 15px; font-weight: bold; }
-    
-    .input-wrapper {
-        position: relative;
-    }
-    
-    input {
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        border-radius: 8px;
-        border: 2px solid #ccc;
-        font-size: 1rem;
-    }
-    
-    input:focus {
-        outline: none;
-        border-color: #0ea5e9;
-        box-shadow: 0 0 5px #0ea5e9;
-    }
-    
-    input.error {
-        border-color: #ef4444;
-        box-shadow: 0 0 5px #ef4444;
-    }
+        .sidebar h1 {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .error-text {
-        color: #ef4444;
-        font-size: 12px;
-        display: none;
-        margin-top: 4px;
-    }
-    
-    .error-text.show {
-        display: block;
-    }
+        .nav-links { list-style: none; flex-grow: 1; }
+        
+        .nav-links a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
 
-    button {
-        margin-top: 25px;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        background-color: #0ea5e9;
-        color: white;
-        font-weight: bold;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-    button:hover { background-color: #0284c7; }
-    
-    button:disabled {
-        background-color: #94a3b8;
-        cursor: not-allowed;
-    }
+        /* This matches the Dashboard "active" button style */
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
 
-    .back-button {
-        display: inline-block;
-        margin-top: 20px;
-        color: #0ea5e9;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    .back-button:hover { text-decoration: underline; }
-    
-    .success-message {
-        background-color: #d1fae5;
-        color: #065f46;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .error-message {
-        background-color: #fee2e2;
-        color: #991b1b;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .form-section {
-        margin-bottom: 20px;
-    }
-    
-    .password-note {
-        font-size: 12px;
-        color: #6b7280;
-        margin-top: 5px;
-    }
-    
-    .password-section {
-        background: #f0f9ff;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 20px;
-    }
-</style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+        .sidebar-footer {
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+        }
+
+        /* Red underline for Logout as requested */
+        .logout-link {
+            color: #f87171 !important;
+            text-decoration: underline !important;
+            text-underline-offset: 4px;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px 60px;
+        }
+
+        .header-bar {
+            margin-bottom: 40px;
+        }
+
+        .header-bar h2 { font-size: 1.75rem; color: var(--text-main); }
+        .header-bar p { color: var(--text-muted); margin-top: 5px; }
+
+        .settings-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            max-width: 600px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            background: var(--main-bg);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .success-message { background-color: #dcfce7; color: #166534; }
+        .error-message { background-color: #fee2e2; color: #991b1b; }
+
+        .btn-save {
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-save:hover { background-color: #1d4ed8; }
+
+        @media(max-width:900px) {
+            .sidebar { width: 70px; padding: 20px 10px; }
+            .sidebar h1, .nav-links span, .sidebar-footer span { display: none; }
+            .main-content { margin-left: 70px; padding: 30px; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="navbar">
-    <h1>Profile</h1>
-    <div>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logout">Logout</a>
+<div class="sidebar">
+    <h1><span>◈</span> Workspace</h1>
+    
+    <nav class="nav-links">
+        <a href="/dashboard"><span>Dashboard</span></a>
+        <a href="/profile" class="active"><span>Profile Settings</span></a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="/logout" class="logout-link"><span>Logout</span></a>
     </div>
 </div>
 
-<div class="container">
-    <h1>My Profile</h1>
-    
+<div class="main-content">
+    <div class="header-bar">
+        <h2>Profile Settings</h2>
+        <p>Manage your account details and security.</p>
+    </div>
+
     {% if success %}
-    <div class="success-message">Profile updated successfully!</div>
+        <div class="alert success-message">Profile updated successfully!</div>
     {% endif %}
     
     {% if error %}
-    <div class="error-message">{{ error }}</div>
+        <div class="alert error-message">{{ error }}</div>
     {% endif %}
 
-    <form method="POST" action="/profile" id="profileForm">
-        <div class="form-section">
-            <h3 class="section-title">Personal Information</h3>
-            
-            <div class="input-group">
-                <label>Username:</label>
-                <input type="text" value="{{ session.get('user', '') }}" disabled style="background-color: #f1f5f9; cursor: not-allowed;">
-            </div>
-            
-            <div class="input-group">
-                <label>Name:</label>
-                <div class="input-wrapper">
-                    <input type="text" name="name" id="name" value="{{ info.get('name', '') }}">
-                </div>
-                <div class="error-text" id="nameError">Required</div>
-            </div>
+    <form method="POST" action="/profile" class="settings-card">
+        <span class="section-title">Personal Details</span>
+        
+        <div class="form-group">
+            <label for="new_username">Username</label>
+            <input type="text" name="new_username" id="new_username" value="{{ session.get('user', '') }}">
+        </div>
 
-            <div class="input-group">
-                <label>Age:</label>
-                <div class="input-wrapper">
-                    <input type="number" name="age" id="age" value="{{ info.get('age', '') }}">
-                </div>
-                <div class="error-text" id="ageError">Required - Must be between 18 and 90</div>
-            </div>
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" name="name" id="name" value="{{ info.name if info else '' }}">
+        </div>
 
-            <div class="input-group">
-                <label>Address:</label>
-                <div class="input-wrapper">
-                    <input type="text" name="address" id="address" value="{{ info.get('address', '') }}">
-                </div>
-                <div class="error-text" id="addressError">Required</div>
+        <div style="display: flex; gap: 20px;">
+            <div class="form-group" style="flex: 1;">
+                <label for="age">Age</label>
+                <input type="number" name="age" id="age" value="{{ info.age if info else '' }}">
+            </div>
+            <div class="form-group" style="flex: 2;">
+                <label for="address">Address</label>
+                <input type="text" name="address" id="address" value="{{ info.address if info else '' }}">
             </div>
         </div>
-        
-        <div class="password-section">
-            <h3 class="section-title" style="margin-top: 0;">Change Password (Optional)</h3>
-            <p class="password-note">If you want to change your password or make any updates, enter your current password below.</p>
-            
-            <div class="input-group">
-                <label>Current Password:</label>
-                <div class="input-wrapper">
-                    <input type="password" name="old_password" id="old_password" placeholder="Enter current password to make changes">
-                </div>
-                <div class="error-text" id="oldPasswordError">Required to make any changes</div>
-            </div>
-            
-            <div class="input-group">
-                <label>New Password:</label>
-                <div class="input-wrapper">
-                    <input type="password" name="new_password" id="new_password" placeholder="Leave blank to keep current password">
-                </div>
-                <div class="error-text" id="newPasswordError">Password too short (min 4 characters)</div>
-            </div>
+
+        <span class="section-title" style="margin-top: 20px;">Identity Check</span>
+        <div class="form-group">
+            <label for="old_password">Current Password <span style="color:var(--error-red)">*</span></label>
+            <input type="password" name="old_password" id="old_password" placeholder="Required to save changes">
         </div>
         
-        <button type="submit" id="submitBtn">Update Profile</button>
+        <div class="form-group">
+            <label for="new_password">New Password (Optional)</label>
+            <input type="password" name="new_password" id="new_password" placeholder="Leave blank to keep current">
+        </div>
+
+        <button type="submit" class="btn-save">Save Changes</button>
     </form>
-
-    <a class="back-button" href="/dashboard">← Back to Dashboard</a>
 </div>
-
-<script>
-document.getElementById("profileForm").addEventListener("submit", function(e) {
-    let valid = true;
-    
-    // Validate required fields
-    const fields = [
-        { id: "name", errorId: "nameError", required: true },
-        { id: "age", errorId: "ageError", required: true },
-        { id: "address", errorId: "addressError", required: true }
-    ];
-    
-    fields.forEach(field => {
-        const input = document.getElementById(field.id);
-        const error = document.getElementById(field.errorId);
-        
-        if (field.required && input.value.trim() === "") {
-            input.classList.add("error");
-            error.classList.add("show");
-            valid = false;
-        } else {
-            input.classList.remove("error");
-            error.classList.remove("show");
-        }
-    });
-    
-    // Age validation
-    const ageInput = document.getElementById("age");
-    const ageError = document.getElementById("ageError");
-    if (ageInput.value && (parseInt(ageInput.value) < 18 || parseInt(ageInput.value) > 90)) {
-        ageInput.classList.add("error");
-        ageError.textContent = "Age must be between 18 and 90";
-        ageError.classList.add("show");
-        valid = false;
-    }
-    
-    // Password validation - if new password is entered, it must be at least 4 characters
-    const newPassword = document.getElementById("new_password");
-    const newPasswordError = document.getElementById("newPasswordError");
-    if (newPassword.value && newPassword.value.length < 4) {
-        newPassword.classList.add("error");
-        newPasswordError.classList.add("show");
-        valid = false;
-    } else {
-        newPassword.classList.remove("error");
-        newPasswordError.classList.remove("show");
-    }
-    
-    if (!valid) {
-        e.preventDefault();
-    }
-});
-
-// Remove error styling on input
-document.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", function() {
-        this.classList.remove("error");
-        const errorId = this.id + "Error";
-        const error = document.getElementById(errorId);
-        if (error) {
-            error.classList.remove("show");
-        }
-    });
-});
-</script>
 
 </body>
 </html>
