@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Workspace | Career Portal</title>
+<style>
+    :root {
+        --sidebar-bg: #1e293b;
+        --main-bg: #f8fafc;
+        --border-color: #e2e8f0;
+        --accent-blue: #2563eb;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --card-bg: #ffffff;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    
+    body { 
+        font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+        background-color: var(--main-bg); 
+        color: var(--text-main);
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+        width: 260px;
+        background-color: var(--sidebar-bg);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+    }
+
+    .sidebar h1 {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        margin-bottom: 40px;
+        color: #38bdf8;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .nav-links { list-style: none; flex-grow: 1; }
+    
+    .nav-links a {
+        display: block;
+        color: #cbd5e1;
+        text-decoration: none;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        font-size: 0.95rem;
+        transition: 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .sidebar-footer {
+        border-top: 1px solid #334155;
+        padding-top: 20px;
+    }
+
+    /* Main Content Area */
+    .main-content {
+        margin-left: 260px;
+        flex-grow: 1;
+        padding: 40px 60px;
+    }
+
+    .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .welcome-text h2 { font-size: 1.75rem; color: var(--text-main); }
+    .welcome-text p { color: var(--text-muted); margin-top: 5px; }
+
+    /* Job Grid */
+    .section-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .job-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .job-card {
+        background: var(--card-bg);
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        text-decoration: none;
+        color: var(--text-main);
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .job-card:hover {
+        border-color: var(--accent-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .job-card span.role-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .job-card p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .apply-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--accent-blue);
+        text-transform: uppercase;
+    }
+
+    @media(max-width:900px) {
+        .sidebar { width: 70px; padding: 20px 10px; }
+        .sidebar h1, .nav-links span, .sidebar-footer span { display: none; }
+        .main-content { margin-left: 70px; padding: 30px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h1><span>◈</span> Workspace</h1>
+    
+    <nav class="nav-links">
+        <a href="#" class="active"><span>Dashboard</span></a>
+        <a href="/profile"><span>Profile Settings</span></a>
+        <a href="#"><span>My Applications</span></a>
+        <a href="#"><span>Messages</span></a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="/logout" style="color: #f87171;"><span>Logout</span></a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="header-bar">
+        <div class="welcome-text">
+            <h2>Welcome, {{ session.get('user', 'Guest') }}</h2>
+            <p>Here are the available tracks for your career progression.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <span class="section-title">Open Opportunities</span>
+        <div class="job-grid">
+            <a class="job-card" href="/doctor_application">
+                <div>
+                    <span class="role-title">Medical Resident</span>
+                    <p>Provide clinical care and support within our high-grade medical facilities.</p>
+                </div>
+                <span class="apply-label">Open Application →</span>
+            </a>
+
+            <a class="job-card" href="/soldier_application">
+                <div>
+                    <span class="role-title">Tactical Specialist</span>
+                    <p>Execute field operations and maintain security protocols across sectors.</p>
+                </div>
+                <span class="apply-label">Open Application →</span>
+            </a>
+
+            <a class="job-card" href="/engineer_application">
+                <div>
+                    <span class="role-title">Systems Engineer</span>
+                    <p>Design, build, and maintain robust infrastructure and mechanical systems.</p>
+                </div>
+                <span class="apply-label">Open Application →</span>
+            </a>
+
+            <a class="job-card" href="/game_developer_application">
+                <div>
+                    <span class="role-title">Creative Developer</span>
+                    <p>Build immersive digital experiences using cutting-edge engine technology.</p>
+                </div>
+                <span class="apply-label">Open Application →</span>
+            </a>
+
+            <a class="job-card" href="/data_analyst_application">
+                <div>
+                    <span class="role-title">Data Strategist</span>
+                    <p>Analyze complex datasets to drive organizational decision-making.</p>
+                </div>
+                <span class="apply-label">Open Application →</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

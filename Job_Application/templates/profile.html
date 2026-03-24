@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #e0f2fe;
+        color: #1e3a8a;
+    }
+
+    .navbar {
+        background-color: #0ea5e9;
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: bold;
+    }
+    .navbar a:hover { opacity: 0.8; }
+
+    .container {
+        max-width: 700px;
+        margin: 50px auto;
+        background-color: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h1 { font-size: 2rem; margin-bottom: 30px; text-align: center; }
+    
+    .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        margin-top: 25px;
+        color: #0ea5e9;
+        border-bottom: 2px solid #0ea5e9;
+        padding-bottom: 10px;
+    }
+    
+    .section-title:first-of-type {
+        margin-top: 0;
+    }
+    
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    
+    .input-wrapper {
+        position: relative;
+    }
+    
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 8px;
+        border: 2px solid #ccc;
+        font-size: 1rem;
+    }
+    
+    input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 5px #0ea5e9;
+    }
+    
+    input.error {
+        border-color: #ef4444;
+        box-shadow: 0 0 5px #ef4444;
+    }
+
+    .error-text {
+        color: #ef4444;
+        font-size: 12px;
+        display: none;
+        margin-top: 4px;
+    }
+    
+    .error-text.show {
+        display: block;
+    }
+
+    button {
+        margin-top: 25px;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        background-color: #0ea5e9;
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    button:hover { background-color: #0284c7; }
+    
+    button:disabled {
+        background-color: #94a3b8;
+        cursor: not-allowed;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-top: 20px;
+        color: #0ea5e9;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .back-button:hover { text-decoration: underline; }
+    
+    .success-message {
+        background-color: #d1fae5;
+        color: #065f46;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .error-message {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .form-section {
+        margin-bottom: 20px;
+    }
+    
+    .password-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 5px;
+    }
+    
+    .password-section {
+        background: #f0f9ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+</style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <h1>Profile</h1>
+    <div>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1>My Profile</h1>
+    
+    {% if success %}
+    <div class="success-message">Profile updated successfully!</div>
+    {% endif %}
+    
+    {% if error %}
+    <div class="error-message">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/profile" id="profileForm">
+        <div class="form-section">
+            <h3 class="section-title">Personal Information</h3>
+            
+            <div class="input-group">
+                <label>Username:</label>
+                <input type="text" value="{{ session.get('user', '') }}" disabled style="background-color: #f1f5f9; cursor: not-allowed;">
+            </div>
+            
+            <div class="input-group">
+                <label>Name:</label>
+                <div class="input-wrapper">
+                    <input type="text" name="name" id="name" value="{{ info.get('name', '') }}">
+                </div>
+                <div class="error-text" id="nameError">Required</div>
+            </div>
+
+            <div class="input-group">
+                <label>Age:</label>
+                <div class="input-wrapper">
+                    <input type="number" name="age" id="age" value="{{ info.get('age', '') }}">
+                </div>
+                <div class="error-text" id="ageError">Required - Must be between 18 and 90</div>
+            </div>
+
+            <div class="input-group">
+                <label>Address:</label>
+                <div class="input-wrapper">
+                    <input type="text" name="address" id="address" value="{{ info.get('address', '') }}">
+                </div>
+                <div class="error-text" id="addressError">Required</div>
+            </div>
+        </div>
+        
+        <div class="password-section">
+            <h3 class="section-title" style="margin-top: 0;">Change Password (Optional)</h3>
+            <p class="password-note">If you want to change your password or make any updates, enter your current password below.</p>
+            
+            <div class="input-group">
+                <label>Current Password:</label>
+                <div class="input-wrapper">
+                    <input type="password" name="old_password" id="old_password" placeholder="Enter current password to make changes">
+                </div>
+                <div class="error-text" id="oldPasswordError">Required to make any changes</div>
+            </div>
+            
+            <div class="input-group">
+                <label>New Password:</label>
+                <div class="input-wrapper">
+                    <input type="password" name="new_password" id="new_password" placeholder="Leave blank to keep current password">
+                </div>
+                <div class="error-text" id="newPasswordError">Password too short (min 4 characters)</div>
+            </div>
+        </div>
+        
+        <button type="submit" id="submitBtn">Update Profile</button>
+    </form>
+
+    <a class="back-button" href="/dashboard">← Back to Dashboard</a>
+</div>
+
+<script>
+document.getElementById("profileForm").addEventListener("submit", function(e) {
+    let valid = true;
+    
+    // Validate required fields
+    const fields = [
+        { id: "name", errorId: "nameError", required: true },
+        { id: "age", errorId: "ageError", required: true },
+        { id: "address", errorId: "addressError", required: true }
+    ];
+    
+    fields.forEach(field => {
+        const input = document.getElementById(field.id);
+        const error = document.getElementById(field.errorId);
+        
+        if (field.required && input.value.trim() === "") {
+            input.classList.add("error");
+            error.classList.add("show");
+            valid = false;
+        } else {
+            input.classList.remove("error");
+            error.classList.remove("show");
+        }
+    });
+    
+    // Age validation
+    const ageInput = document.getElementById("age");
+    const ageError = document.getElementById("ageError");
+    if (ageInput.value && (parseInt(ageInput.value) < 18 || parseInt(ageInput.value) > 90)) {
+        ageInput.classList.add("error");
+        ageError.textContent = "Age must be between 18 and 90";
+        ageError.classList.add("show");
+        valid = false;
+    }
+    
+    // Password validation - if new password is entered, it must be at least 4 characters
+    const newPassword = document.getElementById("new_password");
+    const newPasswordError = document.getElementById("newPasswordError");
+    if (newPassword.value && newPassword.value.length < 4) {
+        newPassword.classList.add("error");
+        newPasswordError.classList.add("show");
+        valid = false;
+    } else {
+        newPassword.classList.remove("error");
+        newPasswordError.classList.remove("show");
+    }
+    
+    if (!valid) {
+        e.preventDefault();
+    }
+});
+
+// Remove error styling on input
+document.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", function() {
+        this.classList.remove("error");
+        const errorId = this.id + "Error";
+        const error = document.getElementById(errorId);
+        if (error) {
+            error.classList.remove("show");
+        }
+    });
+});
+</script>
+
+</body>
+</html>

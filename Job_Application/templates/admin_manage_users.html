@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Users - Admin</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #0ea5e9;
+        color: white;
+        min-height: 100vh;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: #0284c7;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    }
+
+    .navbar h1 {
+        font-size: 26px;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+        margin-left: 20px;
+    }
+    
+    .navbar a:hover {
+        opacity: 0.8;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 40px auto;
+        background: #38bdf8;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        color: #1e3a8a;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th {
+        background: #0284c7;
+        color: white;
+        padding: 14px;
+        text-align: left;
+    }
+
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background: #e0f2fe;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 20px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.2s;
+        margin-right: 5px;
+    }
+
+    .btn-edit {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #2563eb;
+    }
+
+    .btn-delete {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+    }
+
+    .btn-save {
+        background: #10b981;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #059669;
+    }
+
+    .btn-cancel {
+        background: #6b7280;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background: #4b5563;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+    }
+
+    .modal {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        width: 400px;
+        color: #1e3a8a;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .modal h3 {
+        margin-bottom: 15px;
+        color: #dc2626;
+        font-size: 1.3rem;
+    }
+
+    .modal p {
+        margin-bottom: 20px;
+        color: #4b5563;
+    }
+
+    .modal input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .modal input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+    }
+
+    .modal input.error {
+        border-color: #ef4444;
+    }
+
+    .modal-error {
+        color: #ef4444;
+        font-size: 14px;
+        margin-bottom: 15px;
+        display: none;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .modal-buttons button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .modal-confirm {
+        background: #ef4444;
+        color: white;
+    }
+
+    .modal-confirm:hover {
+        background: #dc2626;
+    }
+
+    .modal-cancel {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .modal-cancel:hover {
+        background: #d1d5db;
+    }
+
+    .deleted-badge {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .active-badge {
+        background: #d1fae5;
+        color: #065f46;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .edit-form {
+        display: none;
+    }
+
+    .edit-form.show {
+        display: contents;
+    }
+
+    .view-form {
+        display: contents;
+    }
+
+    .view-form.hide {
+        display: none;
+    }
+
+    .edit-input {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .edit-input:focus {
+        outline: none;
+        border-color: #0ea5e9;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 20px;
+    }
+
+    .success-message {
+        background: #d1fae5;
+        color: #065f46;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .error-message {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+</style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+<div class="navbar">
+    <h1>Admin - Manage Users</h1>
+    <div class="nav-links">
+        <a href="/developer_dashboard">Applications</a>
+        <a href="/manage_users">Manage Users</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Registered Users</h2>
+    
+    {% if success %}
+    <div class="success-message">{{ success }}</div>
+    {% endif %}
+    
+    {% if error %}
+    <div class="error-message">{{ error }}</div>
+    {% endif %}
+
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+
+        {% if users %}
+            {% for username, user in users.items() %}
+            <tr data-username="{{ username }}">
+                <td><strong>{{ username }}</strong></td>
+                
+                <!-- View Mode -->
+                <td class="view-form">{{ user.get('name', '') }}</td>
+                <td class="view-form">{{ user.get('age', '') }}</td>
+                <td class="view-form">{{ user.get('address', '') }}</td>
+                <td class="view-form">
+                    {% if user.get('deleted', False) %}
+                    <span class="deleted-badge">Deleted</span>
+                    {% else %}
+                    <span class="active-badge">Active</span>
+                    {% endif %}
+                </td>
+                <td class="view-form">
+                    {% if not user.get('deleted', False) %}
+                    <button class="btn btn-edit" onclick="toggleEdit('{{ username }}')">Edit</button>
+                    <button class="btn btn-delete" onclick="openDeleteModal('{{ username }}')">Delete</button>
+                    {% else %}
+                    <button class="btn btn-save" onclick="restoreUser('{{ username }}')">Restore</button>
+                    {% endif %}
+                </td>
+                
+                <!-- Edit Mode -->
+                <td class="edit-form">
+                    <input type="text" class="edit-input" id="edit-name-{{ username }}" value="{{ user.get('name', '') }}">
+                </td>
+                <td class="edit-form">
+                    <input type="number" class="edit-input" id="edit-age-{{ username }}" value="{{ user.get('age', '') }}">
+                </td>
+                <td class="edit-form">
+                    <input type="text" class="edit-input" id="edit-address-{{ username }}" value="{{ user.get('address', '') }}">
+                </td>
+                <td class="edit-form">
+                    {% if user.get('deleted', False) %}
+                    <span class="deleted-badge">Deleted</span>
+                    {% else %}
+                    <span class="active-badge">Active</span>
+                    {% endif %}
+                </td>
+                <td class="edit-form">
+                    <button class="btn btn-save" onclick="saveUser('{{ username }}')">Save</button>
+                    <button class="btn btn-cancel" onclick="cancelEdit('{{ username }}')">Cancel</button>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6" class="no-data">No registered users yet</td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <h3>⚠️ Confirm Delete User</h3>
+        <p>Are you sure you want to delete user <strong id="deleteUsername"></strong>? This action can be undone by restoring the user later.</p>
+        
+        <label for="adminPassword"><strong>Enter your admin password to confirm:</strong></label>
+        <input type="password" id="adminPassword" placeholder="Admin password">
+        <div class="modal-error" id="modalError">Incorrect password. Please try again.</div>
+        
+        <div class="modal-buttons">
+            <button class="modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="modal-confirm" onclick="confirmDelete()">Delete User</button>
+        </div>
+    </div>
+</div>
+
+<form id="actionForm" method="POST" action="/admin_action">
+    <input type="hidden" name="action" id="formAction">
+    <input type="hidden" name="username" id="formUsername">
+    <input type="hidden" name="name" id="formName">
+    <input type="hidden" name="age" id="formAge">
+    <input type="hidden" name="address" id="formAddress">
+    <input type="hidden" name="admin_password" id="formAdminPassword">
+</form>
+
+<script>
+let currentDeleteUsername = '';
+
+function toggleEdit(username) {
+    const row = document.querySelector(`tr[data-username="${username}"]`);
+    row.querySelectorAll('.view-form').forEach(el => el.classList.add('hide'));
+    row.querySelectorAll('.edit-form').forEach(el => el.classList.add('show'));
+}
+
+function cancelEdit(username) {
+    const row = document.querySelector(`tr[data-username="${username}"]`);
+    row.querySelectorAll('.view-form').forEach(el => el.classList.remove('hide'));
+    row.querySelectorAll('.edit-form').forEach(el => el.classList.remove('show'));
+}
+
+function saveUser(username) {
+    const name = document.getElementById(`edit-name-${username}`).value;
+    const age = document.getElementById(`edit-age-${username}`).value;
+    const address = document.getElementById(`edit-address-${username}`).value;
+    
+    document.getElementById('formAction').value = 'update';
+    document.getElementById('formUsername').value = username;
+    document.getElementById('formName').value = name;
+    document.getElementById('formAge').value = age;
+    document.getElementById('formAddress').value = address;
+    document.getElementById('actionForm').submit();
+}
+
+function openDeleteModal(username) {
+    currentDeleteUsername = username;
+    document.getElementById('deleteUsername').textContent = username;
+    document.getElementById('deleteModal').classList.add('show');
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminPassword').classList.remove('error');
+    document.getElementById('modalError').style.display = 'none';
+    document.getElementById('adminPassword').focus();
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+    currentDeleteUsername = '';
+}
+
+function confirmDelete() {
+    const password = document.getElementById('adminPassword').value;
+    
+    if (!password) {
+        document.getElementById('adminPassword').classList.add('error');
+        document.getElementById('modalError').textContent = 'Password is required.';
+        document.getElementById('modalError').style.display = 'block';
+        return;
+    }
+    
+    document.getElementById('formAction').value = 'delete';
+    document.getElementById('formUsername').value = currentDeleteUsername;
+    document.getElementById('formAdminPassword').value = password;
+    document.getElementById('actionForm').submit();
+}
+
+function restoreUser(username) {
+    if (confirm(`Are you sure you want to restore user "${username}"?`)) {
+        document.getElementById('formAction').value = 'restore';
+        document.getElementById('formUsername').value = username;
+        document.getElementById('actionForm').submit();
+    }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteModal();
+    }
+});
+
+// Close modal on overlay click
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+</script>
+
+</body>
+</html>

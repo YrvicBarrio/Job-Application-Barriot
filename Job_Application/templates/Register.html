@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+color:white;
+}
+
+.container{
+background:rgba(0,0,60,0.75);
+padding:35px;
+border-radius:15px;
+width:380px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.6);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+.error-message{
+background:#fee2e2;
+color:#991b1b;
+padding:12px;
+border-radius:8px;
+margin-bottom:15px;
+font-size:14px;
+}
+
+.input-group{
+margin-bottom:15px;
+text-align:left;
+}
+
+label{
+display:block;
+margin-bottom:5px;
+font-size:14px;
+}
+
+.input-wrapper{
+position:relative;
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:2px solid transparent;
+font-size:14px;
+}
+
+input.error{
+border:2px solid #ef4444;
+}
+
+.icon{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+color:#ef4444;
+font-weight:bold;
+display:none;
+}
+
+.error-text{
+color:#f87171;
+font-size:12px;
+display:none;
+margin-top:4px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:#1e90ff;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+opacity:0.85;
+}
+
+a{
+color:#00bfff;
+text-decoration:none;
+font-size:14px;
+}
+
+</style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Create Account</h1>
+
+{% if error %}
+<div class="error-message">{{ error }}</div>
+{% endif %}
+
+<form method="POST" action="/register" id="registerForm">
+
+<div class="input-group">
+<label>Username</label>
+<div class="input-wrapper">
+<input type="text" name="username" id="username" placeholder="Username" value="{{ request.form.get('username', '') }}">
+<span class="icon">!</span>
+</div>
+<div class="error-text">Required</div>
+</div>
+
+<div class="input-group">
+<label>Full Name</label>
+<div class="input-wrapper">
+<input type="text" name="name" id="name" placeholder="Full Name" value="{{ request.form.get('name', '') }}">
+<span class="icon">!</span>
+</div>
+<div class="error-text">Required</div>
+</div>
+
+<div class="input-group">
+<label>Age</label>
+<div class="input-wrapper">
+<input type="number" name="age" id="age" placeholder="Age" value="{{ request.form.get('age', '') }}">
+<span class="icon">!</span>
+</div>
+<div class="error-text">Age must be 18 - 90</div>
+</div>
+
+<div class="input-group">
+<label>Address</label>
+<div class="input-wrapper">
+<input type="text" name="address" id="address" placeholder="Address" value="{{ request.form.get('address', '') }}">
+<span class="icon">!</span>
+</div>
+<div class="error-text">Required</div>
+</div>
+
+<div class="input-group">
+<label>Password</label>
+<div class="input-wrapper">
+<input type="password" name="password" id="password" placeholder="Password">
+<span class="icon">!</span>
+</div>
+<div class="error-text">Required</div>
+</div>
+
+<button type="submit">Register</button>
+
+</form>
+
+<p style="margin-top:15px;">
+Already have an account? <a href="/login">Login</a>
+</p>
+
+</div>
+
+<script>
+
+document.getElementById("registerForm").addEventListener("submit",function(e){
+
+let valid = true
+const groups = document.querySelectorAll(".input-group")
+
+groups.forEach(group => {
+
+let input = group.querySelector("input")
+let icon = group.querySelector(".icon")
+let error = group.querySelector(".error-text")
+
+if(input.value.trim() === ""){
+
+input.classList.add("error")
+icon.style.display="block"
+error.style.display="block"
+valid=false
+
+}else{
+
+if(input.name === "age"){
+
+let age=parseInt(input.value)
+
+if(age < 18 || age > 90){
+
+input.classList.add("error")
+icon.style.display="block"
+error.style.display="block"
+valid=false
+return
+
+}
+
+}
+
+input.classList.remove("error")
+icon.style.display="none"
+error.style.display="none"
+
+}
+
+})
+
+if(!valid){
+e.preventDefault()
+}
+
+})
+
+</script>
+
+</body>
+</html>

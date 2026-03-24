@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Personnel File: Soldier Application</title>
+<style>
+    :root {
+        --olive-drab: #3d441e;
+        --dark-tactical: #1a1c1e;
+        --caution-orange: #f59e0b;
+        --error-red: #ff4d4d;
+        --text-subtle: #a1a1aa;
+    }
+
+    body { 
+        font-family: 'Courier New', Courier, monospace; 
+        background-color: var(--dark-tactical);
+        background-image: 
+            linear-gradient(rgba(61, 68, 30, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(61, 68, 30, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        color: #e2e8f0; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        min-height: 100vh; 
+        margin: 0; 
+        padding: 40px 0; 
+    }
+
+    .container { 
+        background: #262a2d; 
+        padding: 40px; 
+        border: 2px solid var(--olive-drab);
+        border-radius: 4px; 
+        width: 480px; 
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        position: relative;
+    }
+
+    /* Back Button Styling */
+    .back-btn {
+        display: inline-block;
+        text-decoration: none;
+        color: var(--text-subtle);
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: 1px solid var(--olive-drab);
+        padding: 5px 10px;
+        margin-bottom: 20px;
+        transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+        color: var(--caution-orange);
+        border-color: var(--caution-orange);
+        background: rgba(245, 158, 11, 0.05);
+    }
+
+    h2 { 
+        text-align: left; 
+        margin: 0 0 5px 0; 
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--caution-orange);
+        border-bottom: 1px solid var(--olive-drab);
+        padding-bottom: 10px;
+    }
+
+    .job { 
+        background: var(--olive-drab); 
+        padding: 8px; 
+        margin-bottom: 25px; 
+        font-size: 13px;
+        border-left: 5px solid var(--caution-orange);
+    }
+
+    .input-group { margin-top: 20px; }
+    
+    label { 
+        display: block; 
+        margin-bottom: 8px; 
+        font-size: 12px; 
+        color: var(--text-subtle);
+        text-transform: uppercase;
+    }
+
+    label::before { content: "[ "; color: var(--caution-orange); }
+    label::after { content: " ]"; color: var(--caution-orange); }
+    
+    .field-error {
+        color: var(--error-red);
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 12px;
+        background: #121416;
+        color: #fff;
+        border: 1px solid var(--olive-drab);
+        border-radius: 2px;
+        font-size: 14px;
+        box-sizing: border-box;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .error-border {
+        border-color: var(--error-red) !important;
+    }
+
+    textarea { height: 80px; resize: none; }
+
+    button { 
+        margin-top: 30px; 
+        width: 100%; 
+        padding: 15px; 
+        background: var(--olive-drab); 
+        border: 1px solid #4d5626; 
+        color: white; 
+        font-size: 16px; 
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer; 
+        letter-spacing: 3px;
+    }
+
+    button:hover { 
+        background: #4d5626; 
+        color: var(--caution-orange);
+    }
+
+    .note {
+        font-size: 10px;
+        color: var(--text-subtle);
+        margin-top: 15px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/dashboard" class="back-btn">< RTB (RETURN TO BASE)</a>
+
+    <h2>Personnel Intake</h2>
+    <div class="job">ASSIGNMENT: <strong>INFANTRY / SOLDIER</strong></div>
+
+    <form method="POST" novalidate>
+        
+        <div class="input-group">
+            <label>Full Name</label>
+            {% if errors and errors.fullname %}
+                <span class="field-error">!! {{ errors.fullname }}</span>
+            {% endif %}
+            <input type="text" name="fullname" placeholder="LASTNAME, FIRSTNAME" value="{{ request.form.get('fullname', '') }}" 
+                   class="{% if errors and errors.fullname %}error-border{% endif %}">
+        </div>
+
+        <div class="input-group">
+            <label>Comm-Link (Email)</label>
+            {% if errors and errors.email %}
+                <span class="field-error">!! {{ errors.email }}</span>
+            {% endif %}
+            <input type="email" name="email" placeholder="COMS@NETWORK.MIL" value="{{ request.form.get('email', '') }}"
+                   class="{% if errors and errors.email %}error-border{% endif %}">
+        </div>
+
+        <div class="input-group">
+            <label>Service ID / License</label>
+            {% if errors and errors.license %}
+                <span class="field-error">!! {{ errors.license }}</span>
+            {% endif %}
+            <input type="text" name="license" placeholder="ID-000-000" value="{{ request.form.get('license', '') }}"
+                   class="{% if errors and errors.license %}error-border{% endif %}">
+        </div>
+
+        <div class="input-group">
+            <label>Motivation for Service</label>
+            {% if errors and errors.question1 %}
+                <span class="field-error">!! {{ errors.question1 }}</span>
+            {% endif %}
+            <textarea name="question1" class="{% if errors and errors.question1 %}error-border{% endif %}">{{ request.form.get('question1', '') }}</textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Statement of Intent (Cover Letter)</label>
+            {% if errors and errors.cover_letter %}
+                <span class="field-error">!! {{ errors.cover_letter }}</span>
+            {% endif %}
+            <textarea name="cover_letter" class="{% if errors and errors.cover_letter %}error-border{% endif %}">{{ request.form.get('cover_letter', '') }}</textarea>
+        </div>
+
+        <button type="submit">Deploy Application</button>
+        
+        <p class="note">BY SUBMITTING, YOU ACKNOWLEDGE ALL DATA IS SUBJECT TO AUDIT.</p>
+    </form>
+</div>
+
+</body>
+</html>
